@@ -224,6 +224,6 @@ public class RedBlackTreeTests
 
         // Assert
         tree.Count().Should().Be(numberOfNodes);
-        tree.Height().Should().Be((int)Math.Log2(numberOfNodes));
+        tree.Height().Should().BeLessThan(2 * (int)Math.Log2(numberOfNodes));
     }
 }

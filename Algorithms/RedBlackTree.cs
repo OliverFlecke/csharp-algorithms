@@ -60,7 +60,12 @@ public class RedBlackTree<T> where T : IComparable<T>
 
         public static bool operator !=(Node? a, Node? b) => !(a == b);
 
+        public static bool operator <(Node a, Node b) => a.Value.CompareTo(b.Value) < 0;
+        public static bool operator >(Node a, Node b) => a.Value.CompareTo(b.Value) > 0;
+
         public bool IsLeftChild => this == Parent?.Left;
+
+        public bool IsRightChild => this == Parent?.Right;
     }
 
 
@@ -88,148 +93,119 @@ public class RedBlackTree<T> where T : IComparable<T>
 
     public void Insert(T value)
     {
-        if (this.Root is null)
+        Node? y = null;
+        var temp = Root;
+        var z = new Node(value);
+
+        while (temp is not null)
         {
-            this.Root = new Node(value)
-            {
-                Color = Color.Black,
-            };
+            y = temp;
+
+            if (z < temp) temp = temp.Left;
+            else if (z > temp) temp = temp.Right;
+            else return; // Don't insert duplicates
         }
-        else
+
+        if (y is null) Root = z;
+        else if (z < y) y.Left = z;
+        else y.Right = z;
+
+        Fixup(z);
+
+        void Fixup(Node? z)
         {
-            var node = Root;
-            while (true)
+            while (z is not null && z.Parent?.Color == Color.Red)
             {
-                var comparision = value.CompareTo(node.Value);
-                if (comparision < 0)
+                if (z.Parent.IsLeftChild)
                 {
-                    if (node.Left is null)
+                    var y = z.Parent?.Parent?.Right;
+
+                    if (y?.Color == Color.Red)
                     {
-                        node.Left = new Node(value, node);
-                        node = node.Left;
-                        break;
+                        if (z.Parent is not null) z.Parent.Color = Color.Black;
+                        y.Color = Color.Black;
+                        if (z.Parent?.Parent is not null) z.Parent.Parent.Color = Color.Red;
+                        z = z?.Parent?.Parent;
                     }
                     else
                     {
-                        node = node.Left;
+                        if (z.IsRightChild)
+                        {
+                            z = z.Parent;
+                            if (z is not null) LeftRotate(z);
+                        }
+
+                        if (z?.Parent is not null) z.Parent.Color = Color.Black;
+                        if (z?.Parent?.Parent is not null)
+                        {
+                            z.Parent.Parent.Color = Color.Red;
+                            RightRotate(z.Parent.Parent);
+                        }
                     }
                 }
-                else if (comparision > 0)
+                else
                 {
-                    if (node.Right is null)
+                    var y = z.Parent?.Parent?.Left;
+
+                    if (y?.Color == Color.Red)
                     {
-                        node.Right = new Node(value, node);
-                        node = node.Right;
-                        break;
+                        if (z.Parent is not null) z.Parent.Color = Color.Black;
+                        y.Color = Color.Black;
+                        if (z.Parent?.Parent is not null)
+                        {
+                            z.Parent.Parent.Color = Color.Red;
+                            z = z.Parent.Parent;
+                        }
                     }
                     else
                     {
-                        node = node.Right;
-                    }
-                }
-                else return;
-            }
+                        if (z.IsLeftChild)
+                        {
+                            z = z.Parent;
+                            if (z is not null) RightRotate(z);
+                        }
 
-            RecolorAndRotate(node);
-        }
-
-        void RecolorAndRotate(Node? node)
-        {
-            if (node == this.Root)
-            {
-                node.Color = Color.Black;
-                return;
-            }
-            if (node is null) return;
-            if (node.Parent?.Color == Color.Black) return;
-
-            var uncle = GetUncle(node);
-            if (uncle is not null && Color.Red == uncle.Color)
-            {
-                uncle.Color = Color.Black;
-                node.Parent!.Color = Color.Black;
-
-                if (node.Parent?.Parent is Node grandparent && grandparent != this.Root)
-                {
-                    grandparent.Color = Color.Red;
-                    RecolorAndRotate(grandparent);
-                }
-            }
-            else if (uncle is null || Color.Black == uncle.Color)
-            {
-                if (node.Parent is Node p && p.Parent is Node g)
-                {
-                    if (node.IsLeftChild && p.IsLeftChild)
-                    {
-                        LeftLeftRotate(g, p);
-                        if (g == Root) Root = p;
-                    }
-                    else if (!node.IsLeftChild && !p.IsLeftChild)
-                    {
-                        RightRightRotate(g, p);
-                        if (g == Root) Root = p;
-                    }
-                    else if (!node.IsLeftChild && p.IsLeftChild)
-                    {
-                        var tmp = p.Left;
-                        p.Right = node.Right;
-                        p.Left = node.Left;
-                        node.Right = tmp;
-                        node.Left = p;
-
-                        g.Left = node;
-                        node.Parent = g;
-
-                        LeftLeftRotate(g, node);
-                        if (g == Root) Root = node;
-                    }
-                    else if (node.IsLeftChild && !p.IsLeftChild)
-                    {
-                        p.Left = node.Right;
-                        node.Right = p;
-                        g.Right = node;
-
-                        RightRightRotate(g, node);
-                        if (g == Root) Root = node;
+                        if (z?.Parent is not null) z.Parent.Color = Color.Black;
+                        if (z?.Parent?.Parent is not null)
+                        {
+                            z.Parent.Parent.Color = Color.Red;
+                            LeftRotate(z.Parent.Parent);
+                        }
                     }
                 }
             }
+
+            if (Root is not null)
+                Root.Color = Color.Black;
         }
 
-        Node? GetUncle(Node node)
+        void LeftRotate(Node x)
         {
-            if (node.Parent is null) return null;
-            if (node.Parent.Parent is null) return null;
+            var y = x.Right;
+            x.Right = y?.Left;
 
-            if (node.Parent.Parent.Left?.Value.CompareTo(node.Parent.Value) == 0)
-                return node.Parent.Parent.Right;
-            else
-                return node.Parent.Parent.Left;
+            if (y is not null) y.Parent = x.Parent;
+
+            if (x.Parent is null) Root = y;
+            else if (x.IsLeftChild) x.Parent.Left = y;
+            else x.Parent.Right = y;
+
+            if (y is not null) y.Left = x;
+            x.Parent = y;
         }
 
-        static void SwapColors(Node a, Node b)
+        void RightRotate(Node x)
         {
-            var tmp = a.Color;
-            a.Color = b.Color;
-            b.Color = tmp;
-        }
+            var y = x.Left;
+            x.Left = y?.Right;
 
-        static void RightRightRotate(Node g, Node p)
-        {
-            p.Parent = g.Parent;
-            g.Parent = p;
-            g.Right = p.Left;
-            p.Left = g;
-            SwapColors(p, g);
-        }
+            if (y is not null) y.Parent = x.Parent;
+            if (x.Parent is null) Root = y;
+            else if (!x.IsLeftChild) x.Parent.Right = y;
+            else x.Parent.Left = y;
 
-        static void LeftLeftRotate(Node g, Node p)
-        {
-            p.Parent = g.Parent;
-            g.Parent = p;
-            g.Left = p.Right;
-            p.Right = g;
-            SwapColors(p, g);
+            if (y is not null) y.Right = x;
+            x.Parent = y;
         }
     }
 
@@ -237,19 +213,13 @@ public class RedBlackTree<T> where T : IComparable<T>
     {
         Node? Search(Node? node)
         {
-            if (node is null)
-            {
-                return null;
-            }
-            else
-            {
-                return node.Value.CompareTo(value) switch
+            if (node is null) return null;
+            else return node.Value.CompareTo(value) switch
                 {
                     0 => node,
                     var x when x > 0 => Search(node.Left),
                     _ => Search(node.Right),
                 };
-            }
         }
 
         return Search(this.Root);
