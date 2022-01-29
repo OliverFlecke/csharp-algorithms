@@ -113,4 +113,56 @@ public class CourseScheduleSolution {
 
         return passed.Count == n;
     }
+
+    // Leetcode: https://leetcode.com/problems/course-schedule-ii/
+    /// <summary>
+    /// Extension of the algorithm above, where the order of nodes are returned.
+    /// </summary>
+    /// <param name="n"></param>
+    /// <param name="prerequisites"></param>
+    /// <returns></returns>
+    public int[] FindOrder(int n, int[][] prerequisites) {
+        var neighbors = new Dictionary<int, ISet<int>>();
+        var indegree = new int[n];
+
+        for (int i = 0; i < n; i++) // Initialize all nodes
+        {
+            neighbors.Add(i, new HashSet<int>());
+        }
+
+        foreach (var edge in prerequisites)
+        {
+            neighbors[edge[1]].Add(edge[0]);
+            indegree[edge[0]]++;
+        }
+
+        var leaves = new LinkedList<int>(); // Act as a queue
+        for (int i = 0; i < n; i++)
+        {
+            if (indegree[i] == 0) leaves.AddLast(i);
+        }
+
+        var order = new int[n];
+        int index = 0;
+
+        var passed = new HashSet<int>();
+        while (leaves.Count > 0)
+        {
+            var current = leaves.First();
+            leaves.RemoveFirst();
+            passed.Add(current);
+            order[index++] = current;
+
+            foreach (var parent in neighbors[current])
+            {
+                indegree[parent]--;
+                if (indegree[parent] == 0 && !passed.Contains(parent))
+                {
+                    leaves.AddLast(parent);
+                }
+            }
+        }
+
+        return passed.Count == n ? order : new int[0];
+    }
 }
