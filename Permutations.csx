@@ -118,3 +118,42 @@ foreach (var p in ABB)
 }
 
 Console.WriteLine("Finished");
+
+public IList<IList<int>> PermuteUnique(int[] nums)
+{
+    List<IList<int>> results = new();
+
+    Dictionary<int, int> counter = new();
+    foreach (var n in nums)
+    {
+        if (!counter.ContainsKey(n)) counter.Add(n, 0);
+        counter[n]++;
+    }
+
+    LinkedList<int> choices = new();
+    Backtrack(choices);
+
+    return results;
+
+    void Backtrack(LinkedList<int> choices)
+    {
+        if (choices.Count == nums.Length)
+        {
+            results.Add(new List<int>(choices));
+            return;
+        }
+
+        foreach (var entry in counter)
+        {
+            if (entry.Value == 0) continue;
+
+            choices.AddLast(entry.Key);
+            counter[entry.Key] = entry.Value - 1;
+
+            Backtrack(choices);
+
+            choices.RemoveLast();
+            counter[entry.Key] = entry.Value;
+        }
+    }
+}
