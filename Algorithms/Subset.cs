@@ -24,6 +24,29 @@ public class SubsetSolution
         return result;
     }
 
+    public IList<IList<int>> SubsetsKnuthWithoutString(int[] nums)
+    {
+        var result = new List<IList<int>>();
+
+        int size = (int)Math.Pow(2, nums.Length);
+        for (int i = 0; i < size; i++)
+        {
+            var subset = new List<int>();
+            var n = i;
+            var x = 0;
+            while (n > 0)
+            {
+                if (n % 2 == 1) subset.Add(nums[x]);
+
+                n /= 2;
+                x++;
+            }
+            result.Add(subset);
+        }
+
+        return result;
+    }
+
 
     // Solution with backtracking
     public IList<IList<int>> SubsetsBacktracking(int[] nums)

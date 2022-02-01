@@ -100,7 +100,7 @@ IEnumerable<string> PermutationsWithDuplicates(string str, string answer = "")
 
     for (int i = 0; i < str.Length; i++)
     {
-        var tmp = str.Substring(0, i) + str.Substring(i + 1);
+        var tmp = str[..i] + str[(i + 1)..];
         foreach (var item in PermutationsWithDuplicates(tmp, answer + str[i]))
         {
             if (!permutations.Contains(item)) permutations.Add(item);

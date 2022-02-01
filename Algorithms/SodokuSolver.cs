@@ -49,4 +49,29 @@ public class SodokuSolverSolution
 
         return true;
     }
+
+    // https://leetcode.com/problems/valid-sudoku/
+    public bool IsValidSudoku(char[][] board)
+    {
+        var s = new HashSet<string>();
+
+        for (int i = 0; i < 9; i++)
+        {
+            for (int j = 0; j < 9; j++)
+            {
+                var c = board[i][j];
+
+                if (c == '.') continue;
+
+                if (!s.Add($"{c}r{i}") ||
+                    !s.Add($"{c}c{j}") ||
+                    !s.Add($"{c}b{i / 3}-{j / 3}"))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
