@@ -46,6 +46,27 @@ public class MaxDepthSolution
 
         return depth;
     }
+
+    // https://leetcode.com/problems/minimum-depth-of-binary-tree/
+    public int MinDepth(TreeNode root)
+    {
+        if (root is null) return 0;
+
+        if (root.left is null) return MinDepth(root.right) + 1;
+        if (root.right is null) return MinDepth(root.left) + 1;
+
+        return Math.Min(MinDepth(root.left), MinDepth(root.right)) + 1;
+    }
+
+    // https://leetcode.com/problems/path-sum/
+    public bool HasPathSum(TreeNode? node, int target)
+    {
+        if (node is null) return false;
+        if (node.right is null && node.left is null) return target == node.val;
+
+        return HasPathSum(node.left, target - node.val)
+            || HasPathSum(node.right, target - node.val);
+    }
 }
 
 public class SortedArryToBSTSolution
@@ -111,6 +132,57 @@ public class BalancedBinaryTreeSolution
             return Math.Abs(left - right) > 1
                 ? int.MinValue
                 : Math.Max(left, right) + 1;
+        }
+    }
+}
+
+public class TreeTraversalSolution
+{
+    public class TreeNode
+    {
+        public int val;
+        public TreeNode? left;
+        public TreeNode? right;
+        public TreeNode(int val = 0, TreeNode? left = null, TreeNode? right = null)
+        {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    // https://leetcode.com/problems/binary-tree-preorder-traversal/
+    public IList<int> PreorderTraversal(TreeNode root)
+    {
+        var result = new List<int>();
+        Helper(root);
+
+        return result;
+
+        void Helper(TreeNode? node)
+        {
+            if (node is null) return;
+
+            result.Add(node.val);
+            Helper(node.left);
+            Helper(node.right);
+        }
+    }
+
+    public IList<int> PostorderTraversal(TreeNode root)
+    {
+        var result = new List<int>();
+        Helper(root);
+
+        return result;
+
+        void Helper(TreeNode? node)
+        {
+            if (node is null) return;
+
+            Helper(node.left);
+            Helper(node.right);
+            result.Add(node.val);
         }
     }
 }
