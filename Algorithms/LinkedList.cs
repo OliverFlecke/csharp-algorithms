@@ -70,4 +70,53 @@ public class RemoveNthNodeFromEndSolution
         }
     }
 
+    // https://leetcode.com/problems/merge-k-sorted-lists/
+    public ListNode? MergeKLists(ListNode[] lists)
+    {
+        ListNode? head = null;
+        ListNode? current = head;
+
+        var node = GetNextMin(lists);
+        while (node is not null)
+        {
+            if (head is null)
+            {
+                head = node;
+                current = head;
+            }
+            else
+            {
+                current.next = node;
+                current = current.next;
+            }
+
+            node = GetNextMin(lists);
+        }
+
+        return head;
+
+        ListNode? GetNextMin(ListNode[] lists)
+        {
+            int min = int.MaxValue;
+            int index = -1;
+
+            for (int i = 0; i < lists.Length; i++)
+            {
+                if (lists[i] is not null && lists[i].val < min)
+                {
+                    min = lists[i].val;
+                    index = i;
+                }
+            }
+
+            if (index == -1) return null;
+
+            var node = lists[index];
+            lists[index] = lists[index].next;
+
+            return node;
+        }
+    }
+
+
 }
