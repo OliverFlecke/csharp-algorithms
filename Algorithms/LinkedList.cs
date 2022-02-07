@@ -118,5 +118,42 @@ public class RemoveNthNodeFromEndSolution
         }
     }
 
+    // https://leetcode.com/problems/remove-linked-list-elements/
+    public ListNode? RemoveElements(ListNode? head, int val)
+    {
+        if (head is null) return null;
 
+        head.next = RemoveElements(head.next, val);
+        return head.val == val ? head.next : head;
+    }
+
+    public ListNode RemoveElementsIterative(ListNode head, int val)
+    {
+        var helper = new ListNode();
+        var current = helper;
+        helper.next = head;
+
+        while (current.next is not null)
+        {
+            if (current.next.val == val) current.next = current.next.next;
+            else current = current.next;
+        }
+
+        return helper.next;
+    }
+
+    // https://leetcode.com/problems/reverse-linked-list/
+    public ListNode? ReverseList(ListNode? head)
+    {
+        ListNode? prev = null;
+        while (head is not null)
+        {
+            var n = head.next;
+            head.next = prev;
+            prev = head;
+            head = n;
+        }
+
+        return prev;
+    }
 }
