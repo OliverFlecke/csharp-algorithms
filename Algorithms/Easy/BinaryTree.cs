@@ -24,4 +24,24 @@ public class BinaryTreeSolutions
 
         return root;
     }
+
+    // https://leetcode.com/problems/binary-tree-paths/
+    public IList<string> BinaryTreePaths(TreeNode? root)
+    {
+        if (root is null) return Array.Empty<string>();
+        if (root.left is null && root.right is null)
+            return new List<string> { root.val.ToString() };
+
+        var result = new List<string>();
+        foreach (var path in BinaryTreePaths(root.left))
+        {
+            result.Add($"{root.val}->{path}");
+        }
+        foreach (var path in BinaryTreePaths(root.right))
+        {
+            result.Add($"{root.val}->{path}");
+        }
+
+        return result;
+    }
 }

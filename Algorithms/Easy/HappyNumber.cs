@@ -26,4 +26,22 @@ public class HappyNumberSolution
 
         return result;
     }
+
+    // https://leetcode.com/problems/ugly-number/
+    public bool IsUgly(int n)
+    {
+        if (n <= 0) return false;
+
+        var factors = new int[] { 2, 3, 5 };
+
+        foreach (var factor in factors)
+        {
+            while (n % factor == 0)
+            {
+                n /= factor;
+            }
+        }
+
+        return n == 1;
+    }
 }
