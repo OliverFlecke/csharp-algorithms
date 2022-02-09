@@ -156,4 +156,17 @@ public class RemoveNthNodeFromEndSolution
 
         return prev;
     }
+
+    // https://leetcode.com/problems/delete-node-in-a-linked-list/
+    public void DeleteNode(ListNode node)
+    {
+        while (node?.next?.next is not null)
+        {
+            node.val = node.next.val;
+            node = node.next;
+        }
+
+        node.val = node.next.val;
+        node.next = null;
+    }
 }

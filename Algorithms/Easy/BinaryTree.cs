@@ -44,4 +44,13 @@ public class BinaryTreeSolutions
 
         return result;
     }
+
+    // https://leetcode.com/problems/sum-of-left-leaves/
+    public int SumOfLeftLeaves(TreeNode? root, bool isLeftLeaf = false)
+    {
+        if (root is null) return 0;
+        if (root.right is null && root.left is null) return isLeftLeaf ? root.val : 0;
+
+        return SumOfLeftLeaves(root.left, true) + SumOfLeftLeaves(root.right, false);
+    }
 }
