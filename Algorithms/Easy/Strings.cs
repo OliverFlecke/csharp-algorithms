@@ -10,4 +10,23 @@ public class StringSolutions
             s[s.Length - i - 1] = temp;
         }
     }
+
+    // https://leetcode.com/problems/isomorphic-strings/
+    // Time: O(n) Space: O(1) english alphabet is fixed size
+    public bool IsIsomorphic(string s, string t)
+    {
+        var map = new Dictionary<char, char>();
+        var mapT2S = new Dictionary<char, char>();
+
+        for (int i = 0; i < s.Length; i++)
+        {
+            if (map.ContainsKey(s[i]) && map[s[i]] != t[i]) return false;
+            if (mapT2S.ContainsKey(t[i]) && mapT2S[t[i]] != s[i]) return false;
+
+            map[s[i]] = t[i];
+            mapT2S[t[i]] = s[i];
+        }
+
+        return true;
+    }
 }
