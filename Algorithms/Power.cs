@@ -21,4 +21,16 @@ public class PowerSolution
     {
         return n > 0 && (n & (n - 1)) == 0;
     }
+
+    // https://leetcode.com/problems/power-of-three/
+    public bool IsPowerOfThree(int n)
+    {
+        return (Math.Log10(n) / Math.Log10(3) + double.Epsilon) % 1 <= 2 * double.Epsilon;
+    }
+
+    // https://leetcode.com/problems/power-of-four/
+    public bool IsPowerOfFour(int n)
+    {
+        return (Math.Log10(n) / Math.Log10(4) + double.Epsilon) % 1 <= 2 * double.Epsilon;
+    }
 }
