@@ -169,4 +169,41 @@ public class RemoveNthNodeFromEndSolution
         node.val = node.next.val;
         node.next = null;
     }
+
+    // https://leetcode.com/problems/palindrome-linked-list/
+    public bool IsPalindrome(ListNode head)
+    {
+        var slow = head;
+        var fast = head;
+        while (fast?.next is not null)
+        {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        if (fast is not null) slow = slow.next;
+
+        fast = head;
+        slow = Reverse(slow);
+        while (slow is not null)
+        {
+            if (fast.val != slow.val) return false;
+            fast = fast.next;
+            slow = slow.next;
+        }
+
+        return true;
+
+        ListNode Reverse(ListNode node)
+        {
+            ListNode? prev = null;
+            while (node is not null)
+            {
+                var next = node.next;
+                node.next = prev;
+                prev = node;
+                node = next;
+            }
+            return prev;
+        }
+    }
 }
