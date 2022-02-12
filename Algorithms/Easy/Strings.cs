@@ -103,4 +103,39 @@ public class StringSolutions
             chars[right] = temp;
         }
     }
+
+    // https://leetcode.com/problems/permutation-in-string/
+    public bool CheckInclusion(string s1, string s2)
+    {
+        var original = new Dictionary<char, int>();
+        foreach (var c in s1)
+        {
+            if (!original.ContainsKey(c)) original[c] = 0;
+            original[c]++;
+        }
+
+        var freq = new Dictionary<char, int>(original);
+        var i = 0;
+        var start = 0;
+        while (i < s2.Length)
+        {
+            var c = s2[i];
+            if (freq.ContainsKey(c))
+            {
+                freq[c]--;
+                if (freq[c] <= 0) freq.Remove(c);
+                if (freq.Count == 0) return true;
+            }
+            else
+            {
+                freq = new Dictionary<char, int>(original);
+                i = start;
+                start++;
+            }
+
+            i++;
+        }
+
+        return false;
+    }
 }
