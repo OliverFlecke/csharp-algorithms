@@ -206,4 +206,32 @@ public class RemoveNthNodeFromEndSolution
             return prev;
         }
     }
+
+    // https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/
+    public ListNode DeleteDuplicates(ListNode head)
+    {
+        var sentinel = new ListNode(-1, head);
+        var predecessor = sentinel;
+
+        while (head is not null)
+        {
+            if (head.next is not null && head.val == head.next.val)
+            {
+                while (head.next is not null && head.val == head.next.val)
+                {
+                    head = head.next;
+                }
+
+                predecessor.next = head.next;
+            }
+            else
+            {
+                predecessor = predecessor.next;
+            }
+
+            head = head.next;
+        }
+
+        return sentinel.next;
+    }
 }
