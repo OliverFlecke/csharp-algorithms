@@ -138,4 +138,33 @@ public class StringSolutions
 
         return false;
     }
+
+    // https://leetcode.com/problems/valid-parentheses/
+    public bool IsValidParentheses(string s)
+    {
+        var stack = new Stack<char>();
+
+        for (int i = 0; i < s.Length; i++)
+        {
+            if (s[i] is '(' or '{' or '[')
+            {
+                stack.Push(s[i]);
+            }
+            else if (stack.Count > 0 && Matches(stack.Peek(), s[i]))
+            {
+                stack.Pop();
+            }
+            else return false;
+        }
+
+        return stack.Count == 0;
+
+        bool Matches(char left, char right) => (left, right) switch
+        {
+            ('(', ')') => true,
+            ('{', '}') => true,
+            ('[', ']') => true,
+            _ => false,
+        };
+    }
 }

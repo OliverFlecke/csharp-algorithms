@@ -53,6 +53,35 @@ public class BinaryTreeSolutions
 
         return SumOfLeftLeaves(root.left, true) + SumOfLeftLeaves(root.right, false);
     }
+
+    // https://leetcode.com/problems/binary-tree-level-order-traversal/
+    public IList<IList<int>> LevelOrder(TreeNode root)
+    {
+        var result = new List<IList<int>>();
+        if (root is null) return result;
+
+        var queue = new Queue<TreeNode>();
+        queue.Enqueue(root);
+        var length = queue.Count;
+
+        while (queue.Count > 0)
+        {
+            var level = new List<int>();
+            while (length-- > 0)
+            {
+                var node = queue.Dequeue();
+                level.Add(node.val);
+
+                if (node.left is not null) queue.Enqueue(node.left);
+                if (node.right is not null) queue.Enqueue(node.right);
+            }
+
+            result.Add(level);
+            length = queue.Count;
+        }
+
+        return result;
+    }
 }
 
 public class BinarySearchTree

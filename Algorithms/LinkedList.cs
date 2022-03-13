@@ -234,4 +234,58 @@ public class RemoveNthNodeFromEndSolution
 
         return sentinel.next;
     }
+
+    // https://leetcode.com/problems/add-two-numbers/
+    public ListNode AddTwoNumbers(ListNode l1, ListNode l2)
+    {
+        var sentinel = new ListNode(0);
+        var current = sentinel;
+
+        var carry = 0;
+        while (l1 is not null || l2 is not null)
+        {
+            var x = l1 is not null ? l1.val : 0;
+            var y = l2 is not null ? l2.val : 0;
+
+            var sum = carry + x + y;
+            carry = sum / 10;
+            current.next = new ListNode(sum % 10);
+            current = current.next;
+
+            l1 = l1?.next;
+            l2 = l2?.next;
+        }
+
+        if (carry > 0) current.next = new ListNode(carry);
+
+        return sentinel.next;
+    }
+
+    // https://leetcode.com/problems/rotate-list/
+    public ListNode? RotateRight(ListNode? head, int k)
+    {
+        if (head?.next is null) return head;
+
+        ListNode? sentinel = new(0, head);
+        int length = 0;
+        var fast = sentinel;
+        var slow = sentinel;
+        while (fast.next is not null)
+        {
+            fast = fast.next;
+            length++;
+        }
+
+        k = length - k % length;
+        for (int j = k; j > 0; j--)
+        {
+            slow = slow?.next;
+        }
+
+        fast.next = sentinel.next;
+        sentinel.next = slow?.next;
+        if (slow is not null) slow.next = null;
+
+        return sentinel.next;
+    }
 }
