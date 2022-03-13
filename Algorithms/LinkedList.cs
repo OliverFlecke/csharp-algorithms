@@ -288,4 +288,105 @@ public class RemoveNthNodeFromEndSolution
 
         return sentinel.next;
     }
+
+    public ListNode? SortList(ListNode head)
+    {
+        if (head?.next is null) return head;
+
+        ListNode tail, nextSubList;
+
+        var n = Length(head);
+        var start = head;
+        var sentinel = new ListNode();
+
+        for (int size = 1; size < n; size *= 2)
+        {
+            tail = sentinel;
+            while (start is not null)
+            {
+                if (start.next is null)
+                {
+                    tail.next = start;
+                    break;
+                }
+
+                var mid = Split(start, size);
+                Merge(start, mid);
+                start = nextSubList;
+            }
+
+            start = sentinel.next;
+        }
+
+        return sentinel.next;
+
+        ListNode? Split(ListNode start, int size)
+        {
+            var midPrev = start;
+            var end = start.next;
+
+            for (int i = 1; i < size && (midPrev.next is not null || end?.next is not null); i++)
+            {
+                if (end?.next is not null)
+                {
+                    end = end.next.next is not null ? end.next.next : end.next;
+                }
+
+                if (midPrev.next is not null)
+                {
+                    midPrev = midPrev.next;
+                }
+            }
+
+            var mid = midPrev.next;
+            midPrev.next = null;
+            nextSubList = end?.next;
+            end.next = null;
+
+            return mid;
+        }
+
+        void Merge(ListNode? a, ListNode? b)
+        {
+            var sentinel = new ListNode();
+            var t = sentinel;
+
+            while (a is not null && b is not null)
+            {
+                if (a.val < b.val)
+                {
+                    t.next = a;
+                    a = a.next;
+                    t = t.next;
+                }
+                else
+                {
+                    t.next = b;
+                    b = b.next;
+                    t = t.next;
+                }
+            }
+
+            t.next = a is not null ? a : b;
+            while (t.next is not null)
+            {
+                t = t.next;
+            }
+
+            tail.next = sentinel.next;
+            tail = t;
+        }
+    }
+
+    private static int Length(ListNode? head)
+    {
+        int length = 0;
+        while (head is not null)
+        {
+            head = head.next;
+            length++;
+        }
+
+        return length;
+    }
 }
