@@ -82,6 +82,63 @@ public class BinaryTreeSolutions
 
         return result;
     }
+
+    // https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/
+    public IList<IList<int>> ZigzagLevelOrder(TreeNode root)
+    {
+        var result = new List<IList<int>>();
+        if (root is null) return result;
+
+        var queue = new Queue<TreeNode>();
+        queue.Enqueue(root);
+        var length = queue.Count;
+        var zig = false;
+
+        while (queue.Count > 0)
+        {
+            var level = new LinkedList<int>();
+            while (length-- > 0)
+            {
+                var node = queue.Dequeue();
+
+                if (zig) level.AddFirst(node.val);
+                else level.AddLast(node.val);
+
+                if (node.left is not null) queue.Enqueue(node.left);
+                if (node.right is not null) queue.Enqueue(node.right);
+            }
+
+            zig = !zig;
+            result.Add(level.ToList());
+            length = queue.Count;
+        }
+
+        return result;
+    }
+
+    // https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+    public TreeNode BuildTree(int[] preorder, int[] inorder)
+    {
+        var preorderIndex = 0;
+        var map = new Dictionary<int, int>();
+        for (int i = 0; i < inorder.Length; i++)
+            map[inorder[i]] = i;
+
+        return ArrayToTree(0, preorder.Length - 1);
+
+        TreeNode ArrayToTree(int left, int right)
+        {
+            if (left > right) return null;
+
+            var rootValue = preorder[preorderIndex++];
+            var root = new TreeNode(rootValue);
+
+            root.left = ArrayToTree(left, map[rootValue] - 1);
+            root.right = ArrayToTree(map[rootValue] + 1, right);
+
+            return root;
+        }
+    }
 }
 
 public class BinarySearchTree
