@@ -167,4 +167,35 @@ public class StringSolutions
             _ => false,
         };
     }
+
+    #region Medium
+    // https://leetcode.com/problems/simplify-path/
+    public string SimplifyPath(string path)
+    {
+        var sections = path.Replace("//", "/")
+            .Split("/", StringSplitOptions.RemoveEmptyEntries)
+            .ToList();
+
+        int i = 0;
+        while (i < sections.Count)
+        {
+            if (sections[i] == "..")
+            {
+                sections.RemoveAt(i);
+                if (i > 0)
+                {
+                    sections.RemoveAt(i - 1);
+                    i--;
+                }
+            }
+            else if (sections[i] == ".")
+            {
+                sections.RemoveAt(i);
+            }
+            else i++;
+        }
+
+        return "/" + string.Join("/", sections);
+    }
+    #endregion
 }

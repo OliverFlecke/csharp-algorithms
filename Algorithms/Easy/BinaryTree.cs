@@ -54,6 +54,35 @@ public class BinaryTreeSolutions
         return SumOfLeftLeaves(root.left, true) + SumOfLeftLeaves(root.right, false);
     }
 
+    // https://leetcode.com/problems/binary-tree-preorder-traversal/
+    public IList<int> PreorderTraversal(TreeNode root)
+    {
+        var result = new List<int>();
+        if (root is null) return result;
+
+        var queue = new Queue<TreeNode>();
+        queue.Enqueue(root);
+        var length = queue.Count;
+
+        while (queue.Count > 0)
+        {
+            while (length > 0)
+            {
+                var current = queue.Dequeue();
+                result.Add(current.val);
+
+                if (current.left is not null) queue.Enqueue(current.left);
+                if (current.right is not null) queue.Enqueue(current.right);
+
+                length--;
+            }
+
+            length = queue.Count;
+        }
+
+        return result;
+    }
+
     // https://leetcode.com/problems/binary-tree-level-order-traversal/
     public IList<IList<int>> LevelOrder(TreeNode root)
     {
@@ -139,6 +168,88 @@ public class BinaryTreeSolutions
             return root;
         }
     }
+
+    // https://leetcode.com/problems/binary-tree-maximum-path-sum/
+    public int MaxPathSum(TreeNode? root)
+    {
+        int max = int.MinValue;
+        Traverse(root);
+        return max;
+
+        int Traverse(TreeNode? node)
+        {
+            if (node is null) return 0;
+
+            int left = Math.Max(0, Traverse(node.left));
+            int right = Math.Max(0, Traverse(node.right));
+
+            max = Math.Max(max, left + right + node.val);
+            return Math.Max(left, right) + node.val;
+        }
+    }
+
+    // https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
+    public TreeNode? LowestCommonAncestor(TreeNode? root, TreeNode p, TreeNode q)
+    {
+        if (root is null || root == p || root == q) return root;
+
+        var left = LowestCommonAncestor(root.left, p, q);
+        var right = LowestCommonAncestor(root.right, p, q);
+
+        if (left is not null && right is not null) return root;
+
+        return left ?? right;
+    }
+
+
+    // https://leetcode.com/problems/serialize-and-deserialize-binary-tree/
+    public class BinaryTreeCodec
+    {
+
+        // Encodes a tree to a single string.
+        public string serialize(TreeNode? root)
+        {
+            var list = new List<string>();
+            Recurse(root);
+
+            return string.Join(",", list);
+
+            void Recurse(TreeNode? node)
+            {
+                if (node is null)
+                {
+                    list.Add("#");
+                    return;
+                }
+
+                list.Add(node.val.ToString());
+                Recurse(node.left);
+                Recurse(node.right);
+            }
+        }
+
+        // Decodes your encoded data to tree.
+        public TreeNode? deserialize(string data)
+        {
+            var queue = new Queue<string>(data.Split(","));
+            return Recurse();
+
+            TreeNode? Recurse()
+            {
+                if (int.TryParse(queue.Dequeue(), out int value))
+                {
+                    var root = new TreeNode(value)
+                    {
+                        left = Recurse(),
+                        right = Recurse()
+                    };
+                    return root;
+                }
+                else return null;
+            }
+        }
+    }
+
 }
 
 public class BinarySearchTree
