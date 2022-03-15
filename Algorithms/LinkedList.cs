@@ -389,4 +389,25 @@ public class RemoveNthNodeFromEndSolution
 
         return length;
     }
+
+    // https://leetcode.com/problems/odd-even-linked-list/
+    public ListNode? OddEvenList(ListNode head)
+    {
+        if (head?.next is null) return head;
+
+        var evenHead = head.next;
+        var even = evenHead;
+        var odd = head;
+
+        while (even?.next is not null)
+        {
+            odd.next = even.next;
+            odd = odd.next;
+            even.next = odd.next;
+            even = even.next;
+        }
+
+        odd.next = evenHead;
+        return head;
+    }
 }
