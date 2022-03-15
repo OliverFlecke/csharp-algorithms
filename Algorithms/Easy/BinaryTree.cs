@@ -83,6 +83,26 @@ public class BinaryTreeSolutions
         return result;
     }
 
+    // https://leetcode.com/problems/kth-smallest-element-in-a-bst/
+    public int KthSmallest(TreeNode? root, int k)
+    {
+        var stack = new Stack<TreeNode>();
+        while (root is not null || stack.Count != 0)
+        {
+            while (root is not null)
+            {
+                stack.Push(root);
+                root = root.left;
+            }
+
+            root = stack.Pop();
+            if (--k == 0) return root.val;
+            root = root.right;
+        }
+
+        return -1;
+    }
+
     // https://leetcode.com/problems/binary-tree-level-order-traversal/
     public IList<IList<int>> LevelOrder(TreeNode root)
     {
