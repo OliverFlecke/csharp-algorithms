@@ -4,7 +4,7 @@ public class ShuffleArraySolution
     private int[] original;
     private Random rand = new Random();
 
-    public Solution(int[] nums)
+    public ShuffleArraySolution(int[] nums)
     {
         original = nums;
     }
